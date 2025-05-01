@@ -1,6 +1,6 @@
-[submodule "ros2_shared"]
-	path = ros2_shared
-	url = https://github.com/ptrmu/ros2_shared.git
 [submodule "src/opencv_cam"]
 	path = src/opencv_cam
 	url = https://github.com/ptrmu/opencv_cam.git
+[submodule "src/ros2_shared"]
+	path = src/ros2_shared
+	url = https://github.com/ptrmu/ros2_shared.git
