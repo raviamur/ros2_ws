@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+message DriveMotorRequest {
+	optional  uint32 left_motor_speed = 1;
+    	optional  uint32 right_motor_speed = 2;
+   	optional  bool reverse = 3;
+}

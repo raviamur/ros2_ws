@@ -1,0 +1,30 @@
+/left/image_raw:
+  reliability: best_effort
+  history: keep_last
+  depth: 10
+
+/right/image_raw:
+  reliability: best_effort
+  history: keep_last
+  depth: 10
+
+/left/camera_info:
+  reliability: best_effort
+  history: keep_last
+  depth: 10
+
+/right/camera_info:
+  reliability: best_effort
+  history: keep_last
+  depth: 10
+
+/disparity:
+  reliability: best_effort
+  history: keep_last
+  depth: 10
+
+/disparity_right:
+  reliability: best_effort
+  history: keep_last
+  depth: 10
+

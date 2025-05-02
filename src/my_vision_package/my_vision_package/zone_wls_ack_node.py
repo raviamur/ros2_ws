@@ -39,12 +39,6 @@ class ZoneBasedWLSFilterNode(Node):
         self.frame_counter = 0
         self.last_command_time = time.time()
         self.command_cooldown = 0.5
-        self.last_sent_command = "NONE"
-
-        # Speed ramping settings
-        self.max_speed = 250
-        self.ramp_steps = 4
-        self.command_queue = []
 
         self.get_logger().info("Zone-Based WLS Filter Node with Temporal Accumulation + ACK gating started")
 
@@ -58,6 +52,7 @@ class ZoneBasedWLSFilterNode(Node):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
             disp_image = np.array(cv_image, dtype=np.float32)
+
             valid_disp = np.where((disp_image > 0.5) & (disp_image < 5.0), disp_image, 0)
             h, w = valid_disp.shape
 
@@ -74,24 +69,11 @@ class ZoneBasedWLSFilterNode(Node):
         except Exception as e:
             self.get_logger().error(f"Error in disparity_callback: {e}")
 
-    def ramp_speed_command(self, left_speed, right_speed):
-        for i in range(1, self.ramp_steps + 1):
-            l = int(left_speed * i / self.ramp_steps)
-            r = int(right_speed * i / self.ramp_steps)
-            self.command_queue.append(f"{l},{r}")
-
     def ack_callback(self, msg):
         if not msg.data:
             return
 
         if time.time() - self.last_command_time < self.command_cooldown:
-            return
-
-        if self.command_queue:
-            next_cmd = self.command_queue.pop(0)
-            self.cmd_publisher.publish(String(data=next_cmd))
-            self.get_logger().info(f"Publishing ramped /nav_cmd: {next_cmd}")
-            self.last_command_time = time.time()
             return
 
         if self.frame_counter >= self.frame_accumulate_threshold:
@@ -103,18 +85,7 @@ class ZoneBasedWLSFilterNode(Node):
             else:
                 cmd = "REVERSE"
 
-            speed_map = {
-                "LEFT": (100, 250),
-                "RIGHT": (250, 100),
-                "REVERSE": (-120, -120),
-                "NONE": (-120, -120)
-            }
-
-            if cmd in speed_map:
-                l_speed, r_speed = speed_map[cmd]
-                self.ramp_speed_command(l_speed, r_speed)
-
-            self.cmd_publisher.publish(String(data=f"{l_speed},{r_speed}"))
+            self.cmd_publisher.publish(String(data=cmd))
             if cmd != self.last_command:
                 self.get_logger().info(f"Switching nav_cmd to: {cmd}")
                 self.last_command = cmd
@@ -127,14 +98,12 @@ class ZoneBasedWLSFilterNode(Node):
     def spin(self):
         rclpy.spin(self)
 
-
 def main():
     rclpy.init()
     node = ZoneBasedWLSFilterNode()
     node.spin()
     node.destroy_node()
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()

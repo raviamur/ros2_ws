@@ -41,11 +41,11 @@ class SerialBridgeNode(Node):
         cmd = msg.data.strip()
         if cmd in ["LEFT", "RIGHT", "REVERSE", "NONE"]:
             if cmd == "LEFT":
-                self.target_left = -160
-                self.target_right = -120
-            elif cmd == "RIGHT":
                 self.target_left = -120
                 self.target_right = -160
+            elif cmd == "RIGHT":
+                self.target_left = -160
+                self.target_right = -120
             elif cmd == "REVERSE":
                 self.target_left = -120
                 self.target_right = -120

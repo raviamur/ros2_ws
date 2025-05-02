@@ -1,0 +1,27 @@
+# Configuration parameters for the disparity node in ROS2.
+# 
+# Parameters:
+# - prefilter_size: Size of the prefilter used in the disparity calculation.
+# - prefilter_cap: Cap value for the prefilter.
+# - correlation_window_size: Size of the correlation window used in the disparity calculation.
+# - min_disparity: Minimum disparity value.
+# - disparity_range: Range of disparity values.
+# - uniqueness_ratio: Uniqueness ratio used to filter disparity values.
+# - texture_threshold: Texture threshold used to filter disparity values.
+# - speckle_size: Maximum size of speckles to be removed.
+# - speckle_range: Maximum disparity variation within connected components.
+/disparity:
+  ros__parameters:
+    prefilter_size: 9
+    prefilter_cap: 3
+    correlation_window_size: 15
+    min_disparity: 0
+    disparity_range: 64
+    uniqueness_ratio: 15
+    texture_threshold: 3
+    speckle_size: 100
+    speckle_range: 4
+    publish_rate: 10
+    output_frame: "camera_frame"
+    debug_mode: false
+    baseline: 0.092
